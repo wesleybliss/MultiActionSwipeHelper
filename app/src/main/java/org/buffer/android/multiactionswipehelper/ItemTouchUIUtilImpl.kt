@@ -1,4 +1,4 @@
-package org.buffer.android.multiactionswipe
+package org.buffer.android.multiactionswipehelper
 
 import android.graphics.Canvas
 import android.support.v4.view.ViewCompat
@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.support.v7.widget.helper.ItemTouchUIUtil
 import android.view.View
+import org.buffer.android.multiactionswipehelperhelper.R
 
 internal class ItemTouchUIUtilImpl {
 
@@ -53,8 +54,8 @@ internal class ItemTouchUIUtilImpl {
     internal open class Honeycomb : ItemTouchUIUtil {
 
         override fun clearView(view: View) {
-            ViewCompat.setTranslationX(view, 0f)
-            ViewCompat.setTranslationY(view, 0f)
+            view.translationX = 0f
+            view.translationY = 0f
         }
 
         override fun onSelected(view: View) {
@@ -63,8 +64,8 @@ internal class ItemTouchUIUtilImpl {
 
         override fun onDraw(c: Canvas, recyclerView: RecyclerView, view: View,
                             dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
-            ViewCompat.setTranslationX(view, dX)
-            ViewCompat.setTranslationY(view, dY)
+            view.translationX = dX
+            view.translationY = dY
         }
 
         override fun onDrawOver(c: Canvas, recyclerView: RecyclerView, view: View, dX: Float,

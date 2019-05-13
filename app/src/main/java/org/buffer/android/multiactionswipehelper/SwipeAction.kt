@@ -1,4 +1,4 @@
-package org.buffer.android.multiactionswipe
+package org.buffer.android.multiactionswipehelper
 
 interface SwipeAction {
 

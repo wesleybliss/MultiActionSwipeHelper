@@ -24,7 +24,8 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.animation.Interpolator;
-import org.buffer.android.multiactionswipe.ItemTouchUIUtilImpl;
+import org.buffer.android.multiactionswipehelper.ItemTouchUIUtilImpl;
+import org.buffer.android.multiactionswipehelperhelper.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -269,9 +270,9 @@ public class SwipePositionItemTouchHelper extends RecyclerView.ItemDecoration
             if (DEBUG) {
                 Log.d(TAG, "intercept: x:" + event.getX() + ",y:" + event.getY() + ", " + event);
             }
-            final int action = MotionEventCompat.getActionMasked(event);
+            final int action = event.getActionMasked();
             if (action == MotionEvent.ACTION_DOWN) {
-                mActivePointerId = MotionEventCompat.getPointerId(event, 0);
+                mActivePointerId = event.getPointerId(0);
                 mInitialTouchX = event.getX();
                 mInitialTouchY = event.getY();
 
@@ -302,7 +303,7 @@ public class SwipePositionItemTouchHelper extends RecyclerView.ItemDecoration
             } else if (mActivePointerId != ACTIVE_POINTER_ID_NONE) {
                 // in a non scroll orientation, if distance change is above threshold, we
                 // can select the item
-                final int index = MotionEventCompat.findPointerIndex(event, mActivePointerId);
+                final int index = event.findPointerIndex(mActivePointerId);
                 if (DEBUG) {
                     Log.d(TAG, "pointer index " + index);
                 }
@@ -329,9 +330,8 @@ public class SwipePositionItemTouchHelper extends RecyclerView.ItemDecoration
             if (mActivePointerId == ACTIVE_POINTER_ID_NONE) {
                 return;
             }
-            final int action = MotionEventCompat.getActionMasked(event);
-            final int activePointerIndex = MotionEventCompat
-                    .findPointerIndex(event, mActivePointerId);
+            final int action = event.getActionMasked();
+            final int activePointerIndex = event.findPointerIndex(mActivePointerId);
             if (activePointerIndex >= 0) {
                 checkSelectForSwipe(action, event, activePointerIndex);
             }
@@ -369,13 +369,13 @@ public class SwipePositionItemTouchHelper extends RecyclerView.ItemDecoration
                     break;
                 case MotionEvent.ACTION_POINTER_UP: {
                     mClick = false;
-                    final int pointerIndex = MotionEventCompat.getActionIndex(event);
-                    final int pointerId = MotionEventCompat.getPointerId(event, pointerIndex);
+                    final int pointerIndex = event.getActionIndex();
+                    final int pointerId = event.getPointerId(pointerIndex);
                     if (pointerId == mActivePointerId) {
                         // This was our active pointer going up. Choose a new
                         // active pointer and adjust accordingly.
                         final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
-                        mActivePointerId = MotionEventCompat.getPointerId(event, newPointerIndex);
+                        mActivePointerId = event.getPointerId(newPointerIndex);
                         updateDxDy(event, mSelectedFlags, pointerIndex);
                     }
                     break;
@@ -527,12 +527,12 @@ public class SwipePositionItemTouchHelper extends RecyclerView.ItemDecoration
         if ((mSelectedFlags & (LEFT | RIGHT)) != 0) {
             outPosition[0] = mSelectedStartX + mDx - mSelected.itemView.getLeft();
         } else {
-            outPosition[0] = ViewCompat.getTranslationX(mSelected.itemView);
+            outPosition[0] = mSelected.itemView.getTranslationX();
         }
         if ((mSelectedFlags & (UP | DOWN)) != 0) {
             outPosition[1] = mSelectedStartY + mDy - mSelected.itemView.getTop();
         } else {
-            outPosition[1] = ViewCompat.getTranslationY(mSelected.itemView);
+            outPosition[1] = mSelected.itemView.getTranslationY();
         }
     }
 
@@ -946,9 +946,9 @@ public class SwipePositionItemTouchHelper extends RecyclerView.ItemDecoration
         if (mActivePointerId == ACTIVE_POINTER_ID_NONE) {
             return null;
         }
-        final int pointerIndex = MotionEventCompat.findPointerIndex(motionEvent, mActivePointerId);
-        final float dx = MotionEventCompat.getX(motionEvent, pointerIndex) - mInitialTouchX;
-        final float dy = MotionEventCompat.getY(motionEvent, pointerIndex) - mInitialTouchY;
+        final int pointerIndex = motionEvent.findPointerIndex(mActivePointerId);
+        final float dx = motionEvent.getX(pointerIndex) - mInitialTouchX;
+        final float dy = motionEvent.getY(pointerIndex) - mInitialTouchY;
         final float absDx = Math.abs(dx);
         final float absDy = Math.abs(dy);
 
@@ -993,8 +993,8 @@ public class SwipePositionItemTouchHelper extends RecyclerView.ItemDecoration
 
         // mDx and mDy are only set in allowed directions. We use custom x/y here instead of
         // updateDxDy to avoid swiping if user moves more in the other direction
-        final float x = MotionEventCompat.getX(motionEvent, pointerIndex);
-        final float y = MotionEventCompat.getY(motionEvent, pointerIndex);
+        final float x = motionEvent.getX(pointerIndex);
+        final float y = motionEvent.getY(pointerIndex);
 
         // Calculate the distance moved
         final float dx = x - mInitialTouchX;
@@ -1023,7 +1023,7 @@ public class SwipePositionItemTouchHelper extends RecyclerView.ItemDecoration
             }
         }
         mDx = mDy = 0f;
-        mActivePointerId = MotionEventCompat.getPointerId(motionEvent, 0);
+        mActivePointerId = motionEvent.getPointerId(0);
         select(vh, ACTION_STATE_SWIPE);
         return true;
     }
@@ -1150,10 +1150,8 @@ public class SwipePositionItemTouchHelper extends RecyclerView.ItemDecoration
             if (mVelocityTracker != null && mActivePointerId > -1) {
                 mVelocityTracker.computeCurrentVelocity(PIXELS_PER_SECOND,
                         mCallback.getSwipeVelocityThreshold(mMaxSwipeVelocity));
-                final float xVelocity = VelocityTrackerCompat
-                        .getXVelocity(mVelocityTracker, mActivePointerId);
-                final float yVelocity = VelocityTrackerCompat
-                        .getYVelocity(mVelocityTracker, mActivePointerId);
+                final float xVelocity = mVelocityTracker.getXVelocity(mActivePointerId);
+                final float yVelocity = mVelocityTracker.getYVelocity(mActivePointerId);
                 final int velDirFlag = xVelocity > 0f ? RIGHT : LEFT;
                 final float absXVelocity = Math.abs(xVelocity);
                 if ((velDirFlag & flags) != 0 && dirFlag == velDirFlag &&
@@ -2001,15 +1999,14 @@ public class SwipePositionItemTouchHelper extends RecyclerView.ItemDecoration
                     if (!mCallback.hasDragFlag(mRecyclerView, vh)) {
                         return;
                     }
-                    int pointerId = MotionEventCompat.getPointerId(e, 0);
+                    int pointerId = e.getPointerId(0);
                     // Long press is deferred.
                     // Check w/ active pointer id to avoid selecting after motion
                     // event is canceled.
                     if (pointerId == mActivePointerId) {
-                        final int index = MotionEventCompat
-                                .findPointerIndex(e, mActivePointerId);
-                        final float x = MotionEventCompat.getX(e, index);
-                        final float y = MotionEventCompat.getY(e, index);
+                        final int index = e.findPointerIndex(mActivePointerId);
+                        final float x = e.getX(index);
+                        final float y = e.getY(index);
                         mInitialTouchX = x;
                         mInitialTouchY = y;
                         mDx = mDy = 0f;
@@ -2113,7 +2110,7 @@ public class SwipePositionItemTouchHelper extends RecyclerView.ItemDecoration
                 mX = mStartDx + mFraction * (mTargetX - mStartDx);
             }
             if (mStartDy == mTargetY) {
-                mY = ViewCompat.getTranslationY(mViewHolder.itemView);
+                mY = mViewHolder.itemView.getTranslationY();
             } else {
                 mY = mStartDy + mFraction * (mTargetY - mStartDy);
             }

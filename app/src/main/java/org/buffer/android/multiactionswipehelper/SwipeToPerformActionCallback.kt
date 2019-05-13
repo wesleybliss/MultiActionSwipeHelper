@@ -1,4 +1,4 @@
-package org.buffer.android.multiactionswipe
+package org.buffer.android.multiactionswipehelper
 
 import android.graphics.Canvas
 import android.graphics.Color
@@ -12,11 +12,12 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper.LEFT
 import android.support.v7.widget.helper.ItemTouchHelper.RIGHT
+import org.buffer.android.multiactionswipehelperhelper.R
 
 class SwipeToPerformActionCallback(private val swipeListener: SwipeActionListener,
                                    private val textPadding: Int = 0,
                                    var conversationActions: List<SwipeAction>)
-    : org.buffer.android.multiactionswipe.SwipePositionItemTouchHelper.Callback() {
+    : SwipePositionItemTouchHelper.Callback() {
 
     override fun getMovementFlags(recyclerView: RecyclerView?,
                                   viewHolder: RecyclerView.ViewHolder?): Int {
