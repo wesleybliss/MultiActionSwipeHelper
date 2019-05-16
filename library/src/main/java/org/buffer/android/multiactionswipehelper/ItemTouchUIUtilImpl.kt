@@ -1,17 +1,17 @@
 package org.buffer.android.multiactionswipehelper
 
 import android.graphics.Canvas
-import android.support.v4.view.ViewCompat
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper
-import android.support.v7.widget.helper.ItemTouchUIUtil
+import androidx.core.view.ViewCompat
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.ItemTouchUIUtil
 import android.view.View
 import org.buffer.android.multiactionswipehelperhelper.R
 
 internal class ItemTouchUIUtilImpl {
 
     internal class Lollipop : Honeycomb() {
-        override fun onDraw(c: Canvas, recyclerView: RecyclerView, view: View,
+        override fun onDraw(c: Canvas, recyclerView: androidx.recyclerview.widget.RecyclerView, view: View,
                             dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
             if (isCurrentlyActive) {
                 var originalElevation: Any? = view.getTag(R.id.item_touch_helper_previous_elevation)
@@ -25,7 +25,7 @@ internal class ItemTouchUIUtilImpl {
             super.onDraw(c, recyclerView, view, dX, dY, actionState, isCurrentlyActive)
         }
 
-        private fun findMaxElevation(recyclerView: RecyclerView, itemView: View): Float {
+        private fun findMaxElevation(recyclerView: androidx.recyclerview.widget.RecyclerView, itemView: View): Float {
             val childCount = recyclerView.childCount
             var max = 0f
             for (i in 0 until childCount) {
@@ -62,19 +62,19 @@ internal class ItemTouchUIUtilImpl {
 
         }
 
-        override fun onDraw(c: Canvas, recyclerView: RecyclerView, view: View,
+        override fun onDraw(c: Canvas, recyclerView: androidx.recyclerview.widget.RecyclerView, view: View,
                             dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
             view.translationX = dX
             view.translationY = dY
         }
 
-        override fun onDrawOver(c: Canvas, recyclerView: RecyclerView, view: View, dX: Float,
+        override fun onDrawOver(c: Canvas, recyclerView: androidx.recyclerview.widget.RecyclerView, view: View, dX: Float,
                                 dY: Float, actionState: Int, isCurrentlyActive: Boolean) { }
     }
 
     internal class Gingerbread : ItemTouchUIUtil {
 
-        private fun draw(c: Canvas, parent: RecyclerView, view: View,
+        private fun draw(c: Canvas, parent: androidx.recyclerview.widget.RecyclerView, view: View,
                          dX: Float, dY: Float) {
             c.save()
             c.translate(dX, dY)
@@ -90,14 +90,14 @@ internal class ItemTouchUIUtilImpl {
             view.visibility = View.INVISIBLE
         }
 
-        override fun onDraw(c: Canvas, recyclerView: RecyclerView, view: View,
+        override fun onDraw(c: Canvas, recyclerView: androidx.recyclerview.widget.RecyclerView, view: View,
                             dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
             if (actionState != ItemTouchHelper.ACTION_STATE_DRAG) {
                 draw(c, recyclerView, view, dX, dY)
             }
         }
 
-        override fun onDrawOver(c: Canvas, recyclerView: RecyclerView,
+        override fun onDrawOver(c: Canvas, recyclerView: androidx.recyclerview.widget.RecyclerView,
                                 view: View, dX: Float, dY: Float,
                                 actionState: Int, isCurrentlyActive: Boolean) {
             if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {

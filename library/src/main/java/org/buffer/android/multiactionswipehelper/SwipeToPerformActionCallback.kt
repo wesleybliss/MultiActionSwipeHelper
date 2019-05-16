@@ -8,19 +8,19 @@ import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper.LEFT
-import android.support.v7.widget.helper.ItemTouchHelper.RIGHT
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ItemTouchHelper.LEFT
+import androidx.recyclerview.widget.ItemTouchHelper.RIGHT
 import org.buffer.android.multiactionswipehelperhelper.R
 
 class SwipeToPerformActionCallback(private val swipeListener: SwipeActionListener,
                                    private val textPadding: Int = 0,
-                                   var conversationActions: List<SwipeAction>)
+                                   var conversationActions: List<ISwipeAction>)
     : SwipePositionItemTouchHelper.Callback() {
 
-    override fun getMovementFlags(recyclerView: RecyclerView?,
-                                  viewHolder: RecyclerView.ViewHolder?): Int {
+    override fun getMovementFlags(recyclerView: androidx.recyclerview.widget.RecyclerView?,
+                                  viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder?): Int {
         return makeMovementFlags(0, LEFT or RIGHT)
     }
 
@@ -30,13 +30,13 @@ class SwipeToPerformActionCallback(private val swipeListener: SwipeActionListene
     private var currentIcon: Drawable? = null
     private var currentLabel: String = ""
 
-    override fun onMove(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?,
-                        target: RecyclerView.ViewHolder?): Boolean {
+    override fun onMove(recyclerView: androidx.recyclerview.widget.RecyclerView?, viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder?,
+                        target: androidx.recyclerview.widget.RecyclerView.ViewHolder?): Boolean {
         return false
     }
 
-    override fun onChildDraw(canvas: Canvas?, recyclerView: RecyclerView,
-                             viewHolder: RecyclerView.ViewHolder,
+    override fun onChildDraw(canvas: Canvas?, recyclerView: androidx.recyclerview.widget.RecyclerView,
+                             viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder,
                              dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
 
         val dragDirection = if (dX < 0) RIGHT else LEFT
@@ -130,7 +130,7 @@ class SwipeToPerformActionCallback(private val swipeListener: SwipeActionListene
         super.onChildDraw(canvas, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
     }
 
-    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int,
+    override fun onSwiped(viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder, direction: Int,
                           horizontalTouchPosition: Float) {
         val position =
                 if (Math.abs(horizontalTouchPosition) < (viewHolder.itemView.width / 2)) 0 else 1

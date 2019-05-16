@@ -1,6 +1,6 @@
 package org.buffer.android.multiactionswipehelper
 
-interface SwipeAction {
+interface ISwipeAction {
 
     val identifier: Int
 
