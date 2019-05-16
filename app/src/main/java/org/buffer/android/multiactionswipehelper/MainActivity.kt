@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity(), SwipeActionListener {
             adapter = MultiActionSwipeHelperDemoAdapter(fakeItems)
         }
 
-        val swipeActions = listOf<SwipeAction>(
+        val swipeActions = listOf(
             SwipeAction(
                 R.string.huzzah,
                 50,
@@ -35,7 +35,11 @@ class MainActivity : AppCompatActivity(), SwipeActionListener {
                 R.drawable.ic_launcher_foreground)
         )
         
-        val swipeHandler = SwipeToPerformActionCallback(this, 20, swipeActions)
+        val swipeHandler = SwipeToPerformActionCallback(
+            this, 
+            20, 
+            swipeActions,
+            SwipePositionItemTouchHelper.RIGHT)
         
         SwipePositionItemTouchHelper(swipeHandler).attachToRecyclerView(listItems)
         
