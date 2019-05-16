@@ -18,7 +18,8 @@ class SwipeToPerformActionCallback(
     private val swipeListener: SwipeActionListener,
     private val textPadding: Int = 0,
     private var conversationActions: List<ISwipeAction>,
-    @MultiActionSwipeHelperDirection private val allowedDirections: Int = LEFT or RIGHT)
+    @MultiActionSwipeHelperDirection private val allowedDirections: Int = LEFT or RIGHT,
+    private var returnAfterSwipe: Boolean = false)
     : SwipePositionItemTouchHelper.Callback() {
     
     override fun getMovementFlags(
@@ -172,6 +173,7 @@ class SwipeToPerformActionCallback(
     }
     
     override fun onSwiped(
+        recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder,
         direction: Int,
         horizontalTouchPosition: Float) {
@@ -185,6 +187,10 @@ class SwipeToPerformActionCallback(
             conversationActions, dragDirection, position, fallback)
         
         swipeListener.onActionPerformed(viewHolder.adapterPosition, action)
+        
+        // Return the row to it's original position after swipe is complete
+        if (returnAfterSwipe)
+            recyclerView.adapter?.notifyItemChanged(viewHolder.adapterPosition)
         
     }
     

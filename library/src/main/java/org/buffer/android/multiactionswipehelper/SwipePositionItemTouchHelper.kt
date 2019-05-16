@@ -680,7 +680,7 @@ class SwipePositionItemTouchHelper(
                     // not to call onSwiped because DefaultItemAnimator is not good at merging
                     // animations. Instead, we wait and batch.
                     if ((animator == null || !animator.isRunning(null)) && !hasRunningRecoverAnim())
-                        mCallback.onSwiped(anim.mViewHolder, swipeDir, horizontalTouchPosition)
+                        mCallback.onSwiped(mRecyclerView!!, anim.mViewHolder, swipeDir, horizontalTouchPosition)
                     else
                         mRecyclerView!!.post(this)
                 }
@@ -1663,6 +1663,7 @@ class SwipePositionItemTouchHelper(
          * `direction` will be relative as well. ([.START] or [                   ][.END]).
          */
         abstract fun onSwiped(
+            recyclerView: RecyclerView,
             viewHolder: ViewHolder,
             direction: Int,
             horizontalTouchPosition: Float

@@ -39,7 +39,8 @@ class MainActivity : AppCompatActivity(), SwipeActionListener {
             this, 
             20, 
             swipeActions,
-            SwipePositionItemTouchHelper.RIGHT)
+            SwipePositionItemTouchHelper.RIGHT,
+            true)
         
         SwipePositionItemTouchHelper(swipeHandler).attachToRecyclerView(listItems)
         
@@ -48,8 +49,6 @@ class MainActivity : AppCompatActivity(), SwipeActionListener {
     override fun onActionPerformed(itemPosition: Int, action: ISwipeAction?) {
         
         Log.d("MainActivity", "swiped at $itemPosition - action was $action")
-        
-        listItems.adapter?.notifyItemChanged(itemPosition)
         
     }
     
