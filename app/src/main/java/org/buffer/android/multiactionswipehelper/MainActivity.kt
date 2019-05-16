@@ -49,6 +49,8 @@ class MainActivity : AppCompatActivity(), SwipeActionListener {
         
         Log.d("MainActivity", "swiped at $itemPosition - action was $action")
         
+        listItems.adapter?.notifyItemChanged(itemPosition)
+        
     }
     
 }
