@@ -1,4 +1,7 @@
 # MultiActionSwipeHelper
+
+[![](https://jitpack.io/v/wesleybliss/MultiActionSwipeHelper.svg)](https://jitpack.io/#wesleybliss/MultiActionSwipeHelper)
+
 An Android RecyclerView Swipe Helper for handling multiple actions per direction. The helper allows you to have 4 items in total:
 
 - Short left swipe
