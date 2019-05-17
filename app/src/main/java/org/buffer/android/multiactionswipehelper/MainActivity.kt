@@ -27,24 +27,34 @@ class MainActivity : AppCompatActivity(), SwipeActionListener {
 
         val swipeActions = listOf(
             SwipeAction(
-                R.string.huzzah,
-                50,
-                SwipePositionItemTouchHelper.RIGHT,
-                R.color.money,
-                android.R.color.white,
-                R.drawable.ic_launcher_foreground)
+                labelRes = R.string.keep_going,
+                actionPosition = 0,
+                swipeDirection = SwipePositionItemTouchHelper.RIGHT,
+                labelColorRes = R.color.grey,
+                backgroundColorRes = android.R.color.holo_green_dark,
+                iconRes = R.drawable.ic_check_circle_outline,
+                
+                activeLabelRes = R.string.huzzah,
+                activeLabelColorRes = R.color.white,
+                activeBackgroundColorRes = R.color.money,
+                activeIconRes = R.drawable.ic_check_circle
+            )
         )
         
         val swipeHandler = SwipeToPerformActionCallback(
-            this, 
-            20, 
-            swipeActions,
-            SwipePositionItemTouchHelper.RIGHT,
-            true)
+            swipeListener = this,
+            textPadding = 20,
+            conversationActions = swipeActions,
+            allowedDirections = SwipePositionItemTouchHelper.RIGHT,
+            returnAfterSwipe = true,
+            isUnderFlingThreshold = ::isUnderFlingThreshold)
         
         SwipePositionItemTouchHelper(swipeHandler).attachToRecyclerView(listItems)
         
     }
+    
+    private fun isUnderFlingThreshold(dX: Float, parentWidth: Int) =
+        Math.abs(dX) < (parentWidth / 3)
     
     override fun onActionPerformed(itemPosition: Int, action: ISwipeAction?) {
         

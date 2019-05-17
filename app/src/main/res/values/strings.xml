@@ -2,6 +2,7 @@
     
     <string name="app_name">MultiActionSwipeHelperDirectionApp</string>
     
+    <string name="keep_going">Keep Going…</string>
     <string name="huzzah">Huzzah!</string>
     
 </resources>

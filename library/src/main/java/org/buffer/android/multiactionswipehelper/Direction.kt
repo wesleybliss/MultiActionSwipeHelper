@@ -11,4 +11,4 @@ import androidx.annotation.IntDef
     SwipePositionItemTouchHelper.RIGHT,
     SwipePositionItemTouchHelper.START,
     SwipePositionItemTouchHelper.END)
-annotation class MultiActionSwipeHelperDirection
+annotation class Direction

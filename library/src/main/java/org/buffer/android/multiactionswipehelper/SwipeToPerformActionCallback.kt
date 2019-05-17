@@ -18,9 +18,21 @@ class SwipeToPerformActionCallback(
     private val swipeListener: SwipeActionListener,
     private val textPadding: Int = 0,
     private var conversationActions: List<ISwipeAction>,
-    @MultiActionSwipeHelperDirection private val allowedDirections: Int = LEFT or RIGHT,
-    private var returnAfterSwipe: Boolean = false)
+    @Direction private val allowedDirections: Int = LEFT or RIGHT,
+    var returnAfterSwipe: Boolean = false,
+    var isUnderFlingThreshold: (dX: Float, parentWidth: Int) -> Boolean = ::defaultIsUnderFlingThreshold)
     : SwipePositionItemTouchHelper.Callback() {
+    
+    companion object {
+
+        /**
+         * Default method for calculating if the drag distance
+         * is over the default threshold, which is 50%
+         */
+        fun defaultIsUnderFlingThreshold(dX: Float, parentWidth: Int) : Boolean =
+            Math.abs(dX) < (parentWidth / 2)
+        
+    }
     
     override fun getMovementFlags(
         recyclerView: RecyclerView?,
@@ -37,7 +49,7 @@ class SwipeToPerformActionCallback(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
-    ): Boolean = false
+    ) : Boolean = false
     
     override fun onChildDraw(
         canvas: Canvas,
@@ -79,22 +91,29 @@ class SwipeToPerformActionCallback(
             return
             
         }
-        
-        val isFirstHalf = Math.abs(dX) < (parentWidth / 2)
+
         val paint = Paint()
+        val underThreshold = isUnderFlingThreshold(dX, parentWidth)
         
         if (isCurrentlyActive) {
             val action =
-                if (isFirstHalf)
+                if (underThreshold)
                     ActionHelper.getFirstActionWithDirection(conversationActions, dragDirection)
                 else
                     ActionHelper.getSecondActionWithDirection(conversationActions, dragDirection)
             
             action?.let {
-                background.color = ContextCompat.getColor(recyclerView.context, action.backgroundColor)
-                currentIcon = ContextCompat.getDrawable(recyclerView.context, action.icon)
-                paint.color = ContextCompat.getColor(recyclerView.context, action.labelColor)
-                currentLabel = recyclerView.context.resources.getString(it.identifier)
+                if (underThreshold) {
+                    background.color = ContextCompat.getColor(recyclerView.context, action.backgroundColorRes)
+                    currentIcon = ContextCompat.getDrawable(recyclerView.context, action.iconRes)
+                    paint.color = ContextCompat.getColor(recyclerView.context, action.labelColorRes)
+                    currentLabel = recyclerView.context.resources.getString(it.labelRes)
+                } else {
+                    background.color = ContextCompat.getColor(recyclerView.context, action.activeBackgroundColorRes)
+                    currentIcon = ContextCompat.getDrawable(recyclerView.context, action.activeIconRes)
+                    paint.color = ContextCompat.getColor(recyclerView.context, action.activeLabelColorRes)
+                    currentLabel = recyclerView.context.resources.getString(it.activeLabelRes)
+                }
             }
         }
         
