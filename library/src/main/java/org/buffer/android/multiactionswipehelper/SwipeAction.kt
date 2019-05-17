@@ -29,7 +29,7 @@ data class SwipeAction(
     //
     
     @StringRes
-    override val activeLabelRes: Int,
+    override val activeLabelRes: Int = labelRes,
     
     @ColorRes
     override val activeBackgroundColorRes: Int = backgroundColorRes,
