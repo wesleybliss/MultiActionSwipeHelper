@@ -29,16 +29,18 @@ class MainActivity : AppCompatActivity(), SwipeActionListener {
             object : SwipeAction {
                 override val actionPosition = 0
                 override val swipeDirection = SwipePositionItemTouchHelper.RIGHT
-                override fun getLabelRes(position: Int, isUnderThreshold: Boolean) : Int =
+                override fun getLabelRes(position: Int, isUnderThreshold: Boolean) =
                     if (isUnderThreshold) R.string.keep_going
                     else R.string.huzzah
-                override fun getLabelColorRes(position: Int, isUnderThreshold: Boolean) : Int =
+    
+                override fun getLabelSizeRes(position: Int, isUnderThreshold: Boolean) = R.dimen.text_large_body
+                override fun getLabelColorRes(position: Int, isUnderThreshold: Boolean) =
                     if (isUnderThreshold) R.color.grey
                     else R.color.white
-                override fun getBackgroundColorRes(position: Int, isUnderThreshold: Boolean) : Int =
+                override fun getBackgroundColorRes(position: Int, isUnderThreshold: Boolean) =
                     if (isUnderThreshold) android.R.color.holo_green_dark
                     else R.color.money
-                override fun getIconRes(position: Int, isUnderThreshold: Boolean) : Int =
+                override fun getIconRes(position: Int, isUnderThreshold: Boolean) =
                     if (isUnderThreshold) R.drawable.ic_check_circle_outline
                     else R.drawable.ic_check_circle
             }
@@ -50,6 +52,7 @@ class MainActivity : AppCompatActivity(), SwipeActionListener {
             conversationActions = swipeActions,
             allowedDirections = SwipePositionItemTouchHelper.RIGHT,
             returnAfterSwipe = true,
+            returnAfterSwipeDelay= 1000,
             isUnderFlingThreshold = ::isUnderFlingThreshold)
         
         SwipePositionItemTouchHelper(swipeHandler).attachToRecyclerView(listItems)

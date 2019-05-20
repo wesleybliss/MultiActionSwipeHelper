@@ -3,6 +3,7 @@ package org.buffer.android.multiactionswipehelper
 import android.graphics.*
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.os.Handler
 import androidx.recyclerview.widget.ItemTouchHelper.LEFT
 import androidx.recyclerview.widget.ItemTouchHelper.RIGHT
 import androidx.recyclerview.widget.RecyclerView
@@ -14,6 +15,7 @@ class SwipeToPerformActionCallback(
     private var conversationActions: List<SwipeAction>,
     @Direction private val allowedDirections: Int = LEFT or RIGHT,
     var returnAfterSwipe: Boolean = false,
+    val returnAfterSwipeDelay: Long? = null,
     var isUnderFlingThreshold: (dX: Float, parentWidth: Int) -> Boolean = ::defaultIsUnderFlingThreshold)
     : SwipePositionItemTouchHelper.Callback() {
     
@@ -95,8 +97,8 @@ class SwipeToPerformActionCallback(
             else
                 ActionHelper.getSecondActionWithDirection(conversationActions, dragDirection)
         
-        if (isCurrentlyActive)
-            if (action != null) recyclerView.also {
+        if (isCurrentlyActive && action != null)
+            recyclerView.also {
                 val position = viewHolder.adapterPosition
                 background.color = it.getColorCompat(action.getBackgroundColorRes(position, underThreshold))
                 currentIcon = it.getDrawableCompat(action.getIconRes(position, underThreshold))
@@ -113,14 +115,15 @@ class SwipeToPerformActionCallback(
         val currentIconRight: Int
         val textPositionX: Int
         val textPositionY: Float
+        val textBounds = Rect()
         
-        paint.textSize = recyclerView.context.resources
-            .getDimensionPixelSize(R.dimen.text_large_body).toFloat()
+        val labelSizeRes = action?.getLabelSizeRes(
+            viewHolder.adapterPosition, underThreshold) ?: R.dimen.text_body
+        
+        paint.textSize = recyclerView.context.resources.getDimensionPixelSize(labelSizeRes).toFloat()
         paint.textAlign = Paint.Align.LEFT
         paint.isAntiAlias = true
         paint.color = Color.WHITE
-        
-        val textBounds = Rect()
         paint.getTextBounds(currentLabel, 0, currentLabel.length, textBounds)
         
         val textWidth = textBounds.width()
@@ -177,19 +180,21 @@ class SwipeToPerformActionCallback(
         direction: Int,
         horizontalTouchPosition: Float) {
         
-        val position =
-            if (Math.abs(horizontalTouchPosition) < (viewHolder.itemView.width / 2)) 0 else 1
-        
+        val touchPosition = if (Math.abs(horizontalTouchPosition) < (viewHolder.itemView.width / 2)) 0 else 1
         val dragDirection = if (direction == LEFT) RIGHT else LEFT
-        val fallback = if (position == 0) 1 else 0
+        val fallback = if (touchPosition == 0) 1 else 0
         val action = ActionHelper.handleAction(
-            conversationActions, dragDirection, position, fallback)
+            conversationActions, dragDirection, touchPosition, fallback)
         
         swipeListener.onActionPerformed(viewHolder.adapterPosition, action)
         
         // Return the row to it's original position after swipe is complete
+        // (with a delay, if applicable)
         if (returnAfterSwipe)
-            recyclerView.adapter?.notifyItemChanged(viewHolder.adapterPosition)
+            Handler().postDelayed({
+                recyclerView.adapter
+                    ?.notifyItemChanged(viewHolder.adapterPosition)
+            }, returnAfterSwipeDelay ?: 1)
         
     }
     
