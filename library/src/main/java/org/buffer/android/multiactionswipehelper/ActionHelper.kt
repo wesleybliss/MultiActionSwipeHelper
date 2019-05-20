@@ -3,20 +3,20 @@ package org.buffer.android.multiactionswipehelper
 object ActionHelper {
     
     fun getFirstActionWithDirection(
-        actions: List<ISwipeAction>,
-        swipeDirection: Int) : ISwipeAction? =
+        actions: List<SwipeAction>,
+        swipeDirection: Int) : SwipeAction? =
         handleAction(actions, swipeDirection, primaryPosition = 0, fallBackPosition = 1)
     
     fun getSecondActionWithDirection(
-        actions: List<ISwipeAction>,
-        swipeDirection: Int) : ISwipeAction? =
+        actions: List<SwipeAction>,
+        swipeDirection: Int) : SwipeAction? =
         handleAction(actions, swipeDirection, primaryPosition = 1, fallBackPosition = 0)
     
     fun handleAction(
-        actions: List<ISwipeAction>,
+        actions: List<SwipeAction>,
         swipeDirection: Int,
         primaryPosition: Int,
-        fallBackPosition: Int) : ISwipeAction? {
+        fallBackPosition: Int) : SwipeAction? {
         
         if (actions.size == 1) return actions[0]
         

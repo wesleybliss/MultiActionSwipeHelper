@@ -17,7 +17,7 @@ import org.buffer.android.multiactionswipehelperhelper.R
 class SwipeToPerformActionCallback(
     private val swipeListener: SwipeActionListener,
     private val textPadding: Int = 0,
-    private var conversationActions: List<ISwipeAction>,
+    private var conversationActions: List<SwipeAction>,
     @Direction private val allowedDirections: Int = LEFT or RIGHT,
     var returnAfterSwipe: Boolean = false,
     var isUnderFlingThreshold: (dX: Float, parentWidth: Int) -> Boolean = ::defaultIsUnderFlingThreshold)
@@ -102,19 +102,14 @@ class SwipeToPerformActionCallback(
                 else
                     ActionHelper.getSecondActionWithDirection(conversationActions, dragDirection)
             
-            action?.let {
-                if (underThreshold) {
-                    background.color = ContextCompat.getColor(recyclerView.context, action.backgroundColorRes)
-                    currentIcon = ContextCompat.getDrawable(recyclerView.context, action.iconRes)
-                    paint.color = ContextCompat.getColor(recyclerView.context, action.labelColorRes)
-                    currentLabel = recyclerView.context.resources.getString(it.labelRes)
-                } else {
-                    background.color = ContextCompat.getColor(recyclerView.context, action.activeBackgroundColorRes)
-                    currentIcon = ContextCompat.getDrawable(recyclerView.context, action.activeIconRes)
-                    paint.color = ContextCompat.getColor(recyclerView.context, action.activeLabelColorRes)
-                    currentLabel = recyclerView.context.resources.getString(it.activeLabelRes)
-                }
+            if (action != null) recyclerView.also {
+                val position = viewHolder.adapterPosition
+                background.color = it.getColorCompat(action.getBackgroundColorRes(position, underThreshold))
+                currentIcon = it.getDrawableCompat(action.getIconRes(position, underThreshold))
+                paint.color = it.getColorCompat(action.getLabelColorRes(position, underThreshold))
+                currentLabel = it.getStringCompat(action.getLabelRes(position, underThreshold))
             }
+            
         }
         
         val intrinsicWidth = currentIcon?.intrinsicWidth ?: 0

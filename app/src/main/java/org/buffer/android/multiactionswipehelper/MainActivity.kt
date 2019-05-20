@@ -26,19 +26,22 @@ class MainActivity : AppCompatActivity(), SwipeActionListener {
         }
 
         val swipeActions = listOf(
-            SwipeAction(
-                labelRes = R.string.keep_going,
-                actionPosition = 0,
-                swipeDirection = SwipePositionItemTouchHelper.RIGHT,
-                labelColorRes = R.color.grey,
-                backgroundColorRes = android.R.color.holo_green_dark,
-                iconRes = R.drawable.ic_check_circle_outline,
-                
-                activeLabelRes = R.string.huzzah,
-                activeLabelColorRes = R.color.white,
-                activeBackgroundColorRes = R.color.money,
-                activeIconRes = R.drawable.ic_check_circle
-            )
+            object : SwipeAction {
+                override val actionPosition = 0
+                override val swipeDirection = SwipePositionItemTouchHelper.RIGHT
+                override fun getLabelRes(position: Int, isUnderThreshold: Boolean) : Int =
+                    if (isUnderThreshold) R.string.keep_going
+                    else R.string.huzzah
+                override fun getLabelColorRes(position: Int, isUnderThreshold: Boolean) : Int =
+                    if (isUnderThreshold) R.color.grey
+                    else R.color.white
+                override fun getBackgroundColorRes(position: Int, isUnderThreshold: Boolean) : Int =
+                    if (isUnderThreshold) android.R.color.holo_green_dark
+                    else R.color.money
+                override fun getIconRes(position: Int, isUnderThreshold: Boolean) : Int =
+                    if (isUnderThreshold) R.drawable.ic_check_circle_outline
+                    else R.drawable.ic_check_circle
+            }
         )
         
         val swipeHandler = SwipeToPerformActionCallback(
@@ -56,7 +59,7 @@ class MainActivity : AppCompatActivity(), SwipeActionListener {
     private fun isUnderFlingThreshold(dX: Float, parentWidth: Int) =
         Math.abs(dX) < (parentWidth / 3)
     
-    override fun onActionPerformed(itemPosition: Int, action: ISwipeAction?) {
+    override fun onActionPerformed(itemPosition: Int, action: SwipeAction?) {
         
         Log.d("MainActivity", "swiped at $itemPosition - action was $action")
         

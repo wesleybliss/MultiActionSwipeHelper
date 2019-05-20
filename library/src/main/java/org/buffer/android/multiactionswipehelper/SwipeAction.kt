@@ -1,43 +1,59 @@
-@file:Suppress("unused")
-
 package org.buffer.android.multiactionswipehelper
 
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 
-data class SwipeAction(
-    
-    @StringRes
-    override val labelRes: Int,
-    
-    @ActionPosition
-    override val actionPosition: Int,
-    
-    @Direction
-    override val swipeDirection: Int,
-    
-    @ColorRes
-    override val backgroundColorRes: Int,
-    
-    @ColorRes
-    override val labelColorRes: Int,
-    
-    @DrawableRes
-    override val iconRes: Int,
-    
-    //
-    
-    @StringRes
-    override val activeLabelRes: Int = labelRes,
-    
-    @ColorRes
-    override val activeBackgroundColorRes: Int = backgroundColorRes,
-    
-    @ColorRes
-    override val activeLabelColorRes: Int = labelColorRes,
+interface SwipeAction {
 
+    /**
+     * Position of the action, from the starting point of the drag
+     * Can be first or second (0 or 1)
+     * Use zero if there's only one action on swipe
+     */
+    @ActionPosition
+    val actionPosition: Int
+
+    /**
+     * Direction that should trigger this swipe
+     */
+    @Direction
+    val swipeDirection: Int
+
+    /**
+     * Gets the label to be shown on swipe
+     * Different values can be returned depending on
+     * the [position] in the list, and whether the drag
+     * distance [isUnderThreshold]
+     */
+    @StringRes
+    fun getLabelRes(position: Int, isUnderThreshold: Boolean) : Int
+
+    /**
+     * Gets the background color to be shown on swipe
+     * Different values can be returned depending on
+     * the [position] in the list, and whether the drag
+     * distance [isUnderThreshold]
+     */
+    @ColorRes
+    fun getBackgroundColorRes(position: Int, isUnderThreshold: Boolean) : Int
+
+    /**
+     * Gets the label color to be shown on swipe
+     * Different values can be returned depending on
+     * the [position] in the list, and whether the drag
+     * distance [isUnderThreshold]
+     */
+    @ColorRes
+    fun getLabelColorRes(position: Int, isUnderThreshold: Boolean) : Int
+
+    /**
+     * Gets the drawable to be shown on swipe
+     * Different values can be returned depending on
+     * the [position] in the list, and whether the drag
+     * distance [isUnderThreshold]
+     */
     @DrawableRes
-    override val activeIconRes: Int = iconRes
+    fun getIconRes(position: Int, isUnderThreshold: Boolean) : Int
     
-) : ISwipeAction
+}
