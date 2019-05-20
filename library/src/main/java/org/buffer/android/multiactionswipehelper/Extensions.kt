@@ -1,6 +1,7 @@
 package org.buffer.android.multiactionswipehelper
 
 import android.content.Context
+import android.content.res.Resources
 import android.view.View
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
@@ -26,3 +27,7 @@ fun Context.getStringCompat(@StringRes resId: Int) : String =
 
 fun View.getStringCompat(@StringRes resId: Int) : String =
     context.getStringCompat(resId)
+
+fun Int.toDp() = (this / Resources.getSystem().displayMetrics.density).toInt()
+
+fun Int.toPx() = (this * Resources.getSystem().displayMetrics.density).toInt()

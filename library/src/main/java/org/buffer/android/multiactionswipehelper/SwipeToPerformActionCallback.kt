@@ -1,17 +1,11 @@
 package org.buffer.android.multiactionswipehelper
 
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
-import android.graphics.Rect
+import android.graphics.*
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.ItemTouchHelper.LEFT
 import androidx.recyclerview.widget.ItemTouchHelper.RIGHT
+import androidx.recyclerview.widget.RecyclerView
 import org.buffer.android.multiactionswipehelperhelper.R
 
 class SwipeToPerformActionCallback(
@@ -94,14 +88,14 @@ class SwipeToPerformActionCallback(
 
         val paint = Paint()
         val underThreshold = isUnderFlingThreshold(dX, parentWidth)
+    
+        val action =
+            if (underThreshold)
+                ActionHelper.getFirstActionWithDirection(conversationActions, dragDirection)
+            else
+                ActionHelper.getSecondActionWithDirection(conversationActions, dragDirection)
         
-        if (isCurrentlyActive) {
-            val action =
-                if (underThreshold)
-                    ActionHelper.getFirstActionWithDirection(conversationActions, dragDirection)
-                else
-                    ActionHelper.getSecondActionWithDirection(conversationActions, dragDirection)
-            
+        if (isCurrentlyActive)
             if (action != null) recyclerView.also {
                 val position = viewHolder.adapterPosition
                 background.color = it.getColorCompat(action.getBackgroundColorRes(position, underThreshold))
@@ -109,22 +103,19 @@ class SwipeToPerformActionCallback(
                 paint.color = it.getColorCompat(action.getLabelColorRes(position, underThreshold))
                 currentLabel = it.getStringCompat(action.getLabelRes(position, underThreshold))
             }
-            
-        }
         
         val intrinsicWidth = currentIcon?.intrinsicWidth ?: 0
         val intrinsicHeight = currentIcon?.intrinsicHeight ?: 0
         val currentIconTop = itemView.top + (itemHeight - intrinsicHeight) / 2
         val currentIconBottom = currentIconTop + intrinsicHeight
         val currentIconMargin = (itemHeight - intrinsicHeight) / 2
-        
         val currentIconLeft: Int
         val currentIconRight: Int
         val textPositionX: Int
         val textPositionY: Float
         
         paint.textSize = recyclerView.context.resources
-                .getDimensionPixelSize(R.dimen.text_large_body).toFloat()
+            .getDimensionPixelSize(R.dimen.text_large_body).toFloat()
         paint.textAlign = Paint.Align.LEFT
         paint.isAntiAlias = true
         paint.color = Color.WHITE
@@ -146,12 +137,6 @@ class SwipeToPerformActionCallback(
             currentIconLeft = itemView.right - currentIconMargin - intrinsicWidth
             currentIconRight = itemView.right - currentIconMargin
             
-            currentIcon?.setBounds(
-                currentIconLeft,
-                currentIconTop,
-                currentIconRight,
-                currentIconBottom)
-            
             textPositionX = (itemView.right - currentIconMargin -
                 intrinsicWidth - textPadding - textWidth)
             
@@ -166,15 +151,15 @@ class SwipeToPerformActionCallback(
             currentIconLeft = itemView.left + currentIconMargin
             currentIconRight = itemView.left + currentIconMargin + intrinsicWidth
             
-            currentIcon?.setBounds(
-                currentIconLeft,
-                currentIconTop,
-                currentIconRight,
-                currentIconBottom)
-            
             textPositionX = itemView.left + currentIconMargin + intrinsicWidth + textPadding
             
         }
+        
+        currentIcon?.setBounds(
+            currentIconLeft,
+            currentIconTop,
+            currentIconRight,
+            currentIconBottom)
         
         canvas.also {
             background.draw(it)
